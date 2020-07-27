@@ -93,17 +93,17 @@ playerBoard('board_player2');
 
 //Function to positioning ships 
 
-const placeShips = (boardId) => {
+const placeShips = (board) => {
   const startCoordinates = {x: 0, y:0};
   let shipPlaced = 0; 
   //loop that runs until 4 ships have been added to the board
   while (shipPlaced < 4){
     let {x, y} = startCoordinates;
     // Inside the loop, generate a random x and a random y coordinate (must be between 0 and 3)
-    x = Math.floor(Math.random() * 4);
-    y = Math.floor(Math.random() * 4);
-    let boardRow = boardId.getElementsByTagName('li')[x];
-    let boardCell = boardId.getElementsByTagName('div')[y];
+    x = Math.floor(Math.random() * Math.floor(4));
+    y = Math.floor(Math.random() * Math.floor(4));
+    let boardRow = board.getElementsByTagName('li')[x];
+    let boardCell = board.getElementsByTagName('div')[y];
     if (boardCell.value !== 1) {
       boardCell.value = 1;
       console.log(boardCell.innerText);
