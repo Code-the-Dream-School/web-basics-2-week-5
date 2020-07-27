@@ -33,65 +33,51 @@
     [0, 0, 0, 0]
     ]
     }
-
-    
-    
-    
-    
     
 const board_Player1 = document.getElementById('board_player1');
 const board_Player2 = document.getElementById('board_player2');
 
-
 if (player1.name && player2.name != null ) {
-  document.getElementById('name_player1').innerHTML =
-  player1.name;
-  document.getElementById('name_player2').innerHTML =
-  player2.name;
+  document.getElementById('name_player1').innerHTML = player1.name;
+  document.getElementById('name_player2').innerHTML = player2.name;
 };
 
-
 //Add lives to HTML
-
-document.getElementById('ships_player1').innerHTML =
-  player1.shipCount;
-
-document.getElementById('ships_player2').innerHTML =
-  player2.shipCount;
-
+document.getElementById('ships_player1').innerHTML = player1.shipCount;
+document.getElementById('ships_player2').innerHTML = player2.shipCount;
 
 //Function to get boards
 function playerBoard (boardId) {
 
-const board = document.getElementById(boardId);
-for (var x = 0; x < 4; x++) {
+  const board = document.getElementById(boardId);
+  for (var x = 0; x < 4; x++) {
 
-const li = document.createElement('li'); // creating childs for the list (board), in this case represent a row number 'x' of the board
+  const li = document.createElement('li'); // creating childs for the list (board), in this case represent a row number 'x' of the board
 
-for (var y = 0; y < 4; y++) {
-  const cell = document.createElement('div');
-  cell.className = "square"; // adding css properties to make it looks like a square
-  cell.textContent = `${x},${y}`;  // saves the coordinates as a string value 'x,y'
-  cell.value = 0;//state of the cell
+  for (var y = 0; y < 4; y++) {
+    const cell = document.createElement('div');
+    cell.className = "square"; // adding css properties to make it looks like a square
+    cell.textContent = `${x},${y}`;  // saves the coordinates as a string value 'x,y'
+    cell.value = 0;//state of the cell
 
-  //this function adds the click event to each cell
-  cell.addEventListener( 'click', (e) => {
-      let cell = e.target; // get the element clicked
-      console.log(cell.textContent) //display the coordinates in the console
-      cell.style.visibility = 'hidden';// this  means that the contents of the element will be invisible, but the element stays in its original position and size / try it clicking on any of the black cells (in your browser) and see whats happens
-      cell.style.background ="purple"; //with this propertie you can change the background color of the clicked cell. 
-      // try comment the line bellow and uncomment this line. Do not forget to save this file and refresh the borwser to see the changes
-  });
-  li.appendChild(cell); //adding each cell into the row number x
-}
-board.appendChild(li); //adding each row into the board
-}
+    //this function adds the click event to each cell
+    cell.addEventListener( 'click', (e) => {
+        let cell = e.target; // get the element clicked
+        console.log(cell.textContent) //display the coordinates in the console
+        cell.style.visibility = 'hidden';// this  means that the contents of the element will be invisible, but the element stays in its original position and size / try it clicking on any of the black cells (in your browser) and see whats happens
+        cell.style.background ="purple"; //with this propertie you can change the background color of the clicked cell. 
+        // try comment the line bellow and uncomment this line. Do not forget to save this file and refresh the borwser to see the changes
+    });
+    li.appendChild(cell); //adding each cell into the row number x
+  }
+  board.appendChild(li); //adding each row into the board
+  }
 };
-playerBoard('board_player1');
-playerBoard('board_player2');
+const player1Board = playerBoard('board_player1');
+const player2Board = playerBoard('board_player2');
 
-
-//Function to positioning ships 
+/*
+//Function to positioning ships (Isn't working) 
 
 const placeShips = (board) => {
   const startCoordinates = {x: 0, y:0};
@@ -103,7 +89,7 @@ const placeShips = (board) => {
     x = Math.floor(Math.random() * Math.floor(4));
     y = Math.floor(Math.random() * Math.floor(4));
     let boardRow = board.getElementsByTagName('li')[x];
-    let boardCell = board.getElementsByTagName('div')[y];
+    let boardCell = boardRow.getElementsByTagName('div')[y];
     if (boardCell.value !== 1) {
       boardCell.value = 1;
       console.log(boardCell.innerText);
@@ -112,4 +98,31 @@ const placeShips = (board) => {
     }
   };
   placeShips('board_player1');
-  placeShips('board_player2');
+  // placeShips('board_player2');
+*/
+  //I had this from the previous game:
+  let shipPlaced1 = 0; 
+  let shipPlaced2 = 0; 
+  // 1.-Create a loop that runs until 4 ships have been added to the board
+  while (shipPlaced1 < 4 && shipPlaced2 <4){
+  // Inside the loop, generate a random x and a random y coordinate (must be between 0 and 3)
+  let xPos1 = Math.floor(Math.random() * 4);
+  let xPos2 = Math.floor(Math.random() * 4);
+  // console.log(xPos);
+  let yPos1 = Math.floor(Math.random() * 4);
+  let yPos2 = Math.floor(Math.random() * 4);
+  // console.log(yPos);
+  let shipRandom1 = [xPos1, yPos1]
+  let shipRandom2 = [xPos2, yPos2]
+    console.log(shipRandom1);
+    console.log(shipRandom2);
+  if (player1.gameBoard[xPos1][yPos1] === 0 && player2.gameBoard[xPos2][yPos2] === 0) {
+    player1.gameBoard[xPos1][yPos1] = 1;
+    player2.gameBoard[xPos2][yPos2] = 1;
+    shipPlaced1 ++;
+    shipPlaced2 ++;
+     
+    } 
+  }
+  console.log(player1.gameBoard);  
+  console.log(player2.gameBoard);
