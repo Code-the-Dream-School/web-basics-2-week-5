@@ -9,17 +9,19 @@
 //Also we want you to display the name of the turn player in the tag that has the id 'turn_player'. And if there is a winner  a text with: 'Congratulationes {name_player}!! you win'
 //in the index.html file you are going to find 4 more ids: 'name_player1' , 'name_player2' , 'ships_player1' , 'ships_player2'. We want to see the information of each player in the respective elements
 //As our previous Battleship, the winner is the player that hits the 4 opponent's ships first
-//one more Thing create a 'reset' and a 'new game' buttons as childs of the element with the id 'buttons'. the reset button has to start the game again and the new game create a new game with new players and a new random board.
+//one more Thing create a 'reset' and a 'new game' buttons as childs of the element with the id 'buttons'.
+//  the reset button has to start the game again and the new game create a new game with new players and a new random board.
 // Step 1: Create Players
+
 let player1 = {
   name: prompt("Player 1 enter your name"), //Ask the players for their names (use propmt)
   shipCount: 4,
-  // gameBoard: [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]
+  gameBoard: [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]
 };
 let player2 = {
   name: prompt("Player 2 enter your name"), //Ask the players for their names (use propmt)
   shipCount: 4,
-  // gameBoard: [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]
+  gameBoard: [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]
 };
 const board_Player1 = document.getElementById("board_player1");
 const board_Player2 = document.getElementById("board_player2");
@@ -30,8 +32,24 @@ if (player1.name && player2.name != null) {
 //Add lives to HTML
 document.getElementById("ships_player1").innerHTML = player1.shipCount;
 document.getElementById("ships_player2").innerHTML = player2.shipCount;
-
-
+createButtons();
+//Decide who is going to play first
+function coinFlip (){
+  if (Math.random() < 0.5) {
+    startPlayer = player2;
+    alert (`The first turn is for ${player2.name}`);
+    document.getElementById("board_player1").style.display = "none";
+    document.getElementById("board_player2").style.display = "block";
+  } else {
+    startPlayer = player1;
+    alert (`The first turn is for ${player1.name}`);
+    document.getElementById("board_player2").style.display = "none";
+    document.getElementById("board_player1").style.display = "block";
+  }
+};
+coinFlip(player1, player2);
+let turnPlayer = startPlayer;
+document.getElementById("turn_player").textContent = turnPlayer.name;
 
 //Function to get boards
 function playerBoard(boardId, player) {
@@ -45,123 +63,133 @@ function playerBoard(boardId, player) {
       cell.value = 0; //state of the cell
       //this function adds the click event to each cell
       cell.addEventListener("click", e => {
+        // document.getElementById ("turn_player").textContent = turnPlayer;
         let cell = e.target; // get the element clicked
-        console.log(cell.textContent); //display the coordinates in the console
+        console.log(cell); //display the coordinates in the console
         cell.style.visibility = "hidden"; // this  means that the contents of the element will be invisible, but the element stays in its original position and size / try it clicking on any of the black cells (in your browser) and see whats happens
         // cell.style.background = "purple"; //with this propertie you can change the background color of the clicked cell.
         // try comment the line bellow and uncomment this line. Do not forget to save this file and refresh the borwser to see the changes
-        shoot(cell);
+        // whoIsPlaying(player);
+        shoot(cell, player);
+        // shoot(cell, player2);
+        if (player.shipCount == 0) {
+          alert("You won");
+        }
       });
       li.appendChild(cell); //adding each cell into the row number x
     }
     board.appendChild(li); //adding each row into the board
-    player.gameBoard = board; 
+    player.gameBoard = board;
   }
 }
 playerBoard("board_player1", player1);
 playerBoard("board_player2", player2);
 
-//Function to positioning ships 
-  // placeShips('board_player2');
 
+//Function to positioning ships
 const placeShips = boardId => {
   console.log(boardId);
-  // const startCoordinates = { x: 0, y: 0 };
   let shipPlaced = 0;
   //loop that runs until 4 ships have been added to the board
   while (shipPlaced < 4) {
-    // console.log('ships placed start', shipPlaced)
-    // let { x, y } = startCoordinates;
     // Inside the loop, generate a random x and a random y coordinate (must be between 0 and 3)
     let x = Math.floor(Math.random() * Math.floor(4));
     let y = Math.floor(Math.random() * Math.floor(4));
     const board = document.getElementById(boardId);
     let boardRow = board.getElementsByTagName("li")[x];
-    // console.log("row", boardRow);
-    // console.log(boardRow);
     let boardCell = boardRow.getElementsByTagName("div")[y];
-    // console.log(boardCell.value);
+    console.log(boardCell.value);
     if (boardCell.value !== 1) {
-      console.log(boardCell.value)
+      console.log(boardCell.value);
       boardCell.value = 1;
       console.log(boardCell.value, "placed a ship");
       // extra debugging.
-      boardCell.innerHTML = "1"
+      // boardCell.innerHTML = "1";
       shipPlaced++;
     }
-    console.log(shipPlaced)
+
   }
 };
 placeShips("board_player1");
 placeShips("board_player2");
-const board = document.getElementById("board_player1");
-// console.log(board);
+// const board = document.getElementById("board_player1");
 
 
 
-
-//Set player turns
-function whoIsPlaying(currentPlayer){  
-
-  if (currentPlayer === player1){
+//Hide oponent's board 
+  const changeTurn = () => {
+  console.log(turnPlayer);
+  if (turnPlayer == player1) {
+    turnPlayer = player2;
+    const playerTurnName = document.getElementById("turn_player");
+    playerTurnName.innerHTML = turnPlayer.name;
+    console.log("Test 1", playerTurnName)
     document.getElementById("board_player2").style.display = "none";
     document.getElementById("board_player1").style.display = "block";
+    return;
   }
-  if (currentPlayer === player2) {
+  if (turnPlayer == player2) {
+    turnPlayer = player1;
+    const playerTurnName2 = document.getElementById("turn_player");
+    playerTurnName2.innerHTML = turnPlayer.name;
+    console.log("Test 2", playerTurnName2)
+    document.getElementById("turn_player").textContent = turnPlayer.name;
     document.getElementById("board_player1").style.display = "none";
     document.getElementById("board_player2").style.display = "block";
-    }
+    return;
+  }
+};
+//Shooting function
+function shoot(cell, player) {
+  if (cell.value == 1) {
+    alert("Hit!!!");
+    cell.value = 0;
+    player.shipCount--;
+    console.log("sunken ships", player.shipCount);
+      if(player == player1){
+        document.getElementById("ships_player2").innerHTML = player.shipCount;
+      }
+      if(player == player2){
+        document.getElementById("ships_player1").innerHTML = player.shipCount;
+      }
+  } else {
+    alert("Missed!!!");
+    changeTurn();
+  }  
 }
-whoIsPlaying(player1);
 
 
-//Shooting function 
-
-// function shoot(cell){
+function createButtons () {
+  const NodeButt = document.getElementById('buttons');
+  const buttonRes = document.createElement("button");
+  // buttonRes.innerHTML = "Reset Game";
+  var buttonNew = document.createElement("button");
+  buttonNew.innerHTML = "New Game";
+  // NodeButt.appendChild(buttonRes);
+  NodeButt.appendChild(buttonNew);
+  buttonNew.addEventListener("click", refreshPage);
+  // buttonRes.addEventListener("click", resetGame);
+return;
+}
+//reset wont apply function
+//new game
+function refreshPage(){
+  window.location.reload();
+} 
+// function resetGame(){
+//   console.log("reset game");
+//   placeShips(player1); //reset boats position
+//   placeShips(player2);
+//   playerBoard("board_player1", player1).innerHTML = ""; //clear game fields
+//   playerBoard("board_player2", player1).innerHTML = "";
+//   // boardCreation(player_1, boardPlayer_1); //set up new game fields
+//   // boardCreation(player_2, boardPlayer_2);
   
-//   if (cell.textContent == 1){
-//     alert("Hit!!!")
-//     cell.textContent = 0
-//     player1.shipCount --;
-//     console.log(player1.shipCount) 
-//   }else {
-//     alert("Missed!!!")
-//     whoIsPlaying(player2);
-//   }
-//   }
-//   // return;
-
-let currentUser = player1.name;
-  // let message;
+//   // activeBoard; // Represent which player making fire
+//   coinFlip();
+// }
   
-while (player1.ships !== 0 || player2.ships !== 0) {
-  function shoot(cell){
-  if (currentUser === player1.name) {
-    if (cell.textContent == 1) {
-      player1.shipCount --;
-        alert (`Hit!`)
-      } else if (player1.shipCount === 0) {
-        alert (`Congratulations ${currentUser} you WIN!!!`)
-        break;
-      } else {
-        alert (`You missed!`);
-        currentUser = player2.name; 
-      }
-  }
-    if (currentUser === player2.name) {
-      if (cell.textContent == 1) {
-        player2.shipCount --;
-          alert (`Hit!`)
-        } else if (player2.shipCount === 0) {
-          alert (`Congratulations ${currentUser} you WIN!!!`)
-          break;
-        } else {
-          alert (`You missed!`);
-          currentUser = player1.name; 
-        }
-      }
-    }
-  }
+
 
 
 // Track current player 
