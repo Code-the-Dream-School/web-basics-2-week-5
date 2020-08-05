@@ -31,7 +31,7 @@ if (player1.name && player2.name != null) {
   document.getElementById("name_player2").innerHTML = player2.name;
 }
 
-// Game function 
+//Game function 
 function gameBattleship () {
   //Add lives to HTML
   document.getElementById("ships_player1").innerHTML = player1.shipCount;
@@ -188,6 +188,7 @@ function resetGame(){
   board_Player2.innerHTML = "";
   placeShips("board_player1");
   placeShips("board_player2");
+  gameBattleship();
 }
 
   
